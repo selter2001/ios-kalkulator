@@ -481,6 +481,10 @@ struct CircleVisualization: View {
     }
     
     var body: some View {
+        let circleSize: CGFloat = 160
+        let cx = center.x
+        let cy = center.y
+        
         ZStack {
             // Main circle
             Circle()
@@ -492,18 +496,20 @@ struct CircleVisualization: View {
                     ),
                     lineWidth: 3
                 )
-                .frame(width: 160, height: 160)
+                .frame(width: circleSize, height: circleSize)
+                .position(x: cx, y: cy)
                 .shadow(color: Color(hex: "#00D9FF").opacity(0.5), radius: 15)
             
             // Center point
             Circle()
                 .fill(Color(hex: "#FFD700"))
                 .frame(width: 8, height: 8)
+                .position(x: cx, y: cy)
             
-            // Radius line
+            // Radius line (from center to right edge)
             Path { path in
-                path.move(to: CGPoint(x: 0, y: 0))
-                path.addLine(to: CGPoint(x: 80, y: 0))
+                path.move(to: CGPoint(x: cx, y: cy))
+                path.addLine(to: CGPoint(x: cx + circleSize/2, y: cy))
             }
             .stroke(Color(hex: "#FFD700"), style: StrokeStyle(lineWidth: 2, dash: [5, 3]))
             
@@ -511,24 +517,13 @@ struct CircleVisualization: View {
             Text(radiusValue)
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(Color(hex: "#FFD700"))
-                .offset(x: 40, y: -15)
+                .position(x: cx + circleSize/4, y: cy - 18)
             
-            // Diameter line (horizontal through center)
-            Path { path in
-                path.move(to: CGPoint(x: -80, y: 0))
-                path.addLine(to: CGPoint(x: 80, y: 0))
-            }
-            .stroke(Color.white.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-            
-            // Diameter label
+            // Diameter label (below circle)
             Text(diameterValue)
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(.white.opacity(0.7))
-                .offset(x: 0, y: 100)
-            
-            // Radius arrows
-            DimensionArrow(start: CGPoint(x: 0, y: -90), end: CGPoint(x: 0, y: -80))
-            DimensionArrow(start: CGPoint(x: 0, y: 90), end: CGPoint(x: 0, y: 80))
+                .position(x: cx, y: cy + circleSize/2 + 25)
         }
     }
 }
@@ -548,6 +543,8 @@ struct SquareVisualization: View {
     
     var body: some View {
         let size: CGFloat = 140
+        let cx = center.x
+        let cy = center.y
         
         ZStack {
             // Main square
@@ -561,38 +558,61 @@ struct SquareVisualization: View {
                     lineWidth: 3
                 )
                 .frame(width: size, height: size)
+                .position(x: cx, y: cy)
                 .shadow(color: Color(hex: "#00D9FF").opacity(0.5), radius: 15)
             
             // Left dimension line
-            DimensionLine(
-                start: CGPoint(x: -size/2 - 25, y: -size/2),
-                end: CGPoint(x: -size/2 - 25, y: size/2),
-                label: sideValue,
-                labelOffset: CGPoint(x: -20, y: 0),
-                isVertical: true
-            )
+            Path { path in
+                // Vertical line
+                path.move(to: CGPoint(x: cx - size/2 - 20, y: cy - size/2))
+                path.addLine(to: CGPoint(x: cx - size/2 - 20, y: cy + size/2))
+                // Top cap
+                path.move(to: CGPoint(x: cx - size/2 - 25, y: cy - size/2))
+                path.addLine(to: CGPoint(x: cx - size/2 - 15, y: cy - size/2))
+                // Bottom cap
+                path.move(to: CGPoint(x: cx - size/2 - 25, y: cy + size/2))
+                path.addLine(to: CGPoint(x: cx - size/2 - 15, y: cy + size/2))
+            }
+            .stroke(Color(hex: "#FFD700"), lineWidth: 1.5)
+            
+            // Left label
+            Text(sideValue)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(Color(hex: "#FFD700"))
+                .position(x: cx - size/2 - 45, y: cy)
             
             // Bottom dimension line
-            DimensionLine(
-                start: CGPoint(x: -size/2, y: size/2 + 25),
-                end: CGPoint(x: size/2, y: size/2 + 25),
-                label: sideValue,
-                labelOffset: CGPoint(x: 0, y: 18),
-                isVertical: false
-            )
+            Path { path in
+                // Horizontal line
+                path.move(to: CGPoint(x: cx - size/2, y: cy + size/2 + 20))
+                path.addLine(to: CGPoint(x: cx + size/2, y: cy + size/2 + 20))
+                // Left cap
+                path.move(to: CGPoint(x: cx - size/2, y: cy + size/2 + 15))
+                path.addLine(to: CGPoint(x: cx - size/2, y: cy + size/2 + 25))
+                // Right cap
+                path.move(to: CGPoint(x: cx + size/2, y: cy + size/2 + 15))
+                path.addLine(to: CGPoint(x: cx + size/2, y: cy + size/2 + 25))
+            }
+            .stroke(Color(hex: "#FFD700"), lineWidth: 1.5)
+            
+            // Bottom label
+            Text(sideValue)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(Color(hex: "#FFD700"))
+                .position(x: cx, y: cy + size/2 + 40)
             
             // Diagonal line (przekątna)
             Path { path in
-                path.move(to: CGPoint(x: -size/2, y: -size/2))
-                path.addLine(to: CGPoint(x: size/2, y: size/2))
+                path.move(to: CGPoint(x: cx - size/2, y: cy - size/2))
+                path.addLine(to: CGPoint(x: cx + size/2, y: cy + size/2))
             }
             .stroke(Color.white.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
             
             // Right angle marker
             Path { path in
-                path.move(to: CGPoint(x: -size/2 + 15, y: size/2))
-                path.addLine(to: CGPoint(x: -size/2 + 15, y: size/2 - 15))
-                path.addLine(to: CGPoint(x: -size/2, y: size/2 - 15))
+                path.move(to: CGPoint(x: cx - size/2 + 15, y: cy + size/2))
+                path.addLine(to: CGPoint(x: cx - size/2 + 15, y: cy + size/2 - 15))
+                path.addLine(to: CGPoint(x: cx - size/2, y: cy + size/2 - 15))
             }
             .stroke(Color(hex: "#FFD700"), lineWidth: 1.5)
         }
@@ -622,6 +642,8 @@ struct RectangleVisualization: View {
     var body: some View {
         let width: CGFloat = 180
         let height: CGFloat = 110
+        let cx = center.x
+        let cy = center.y
         
         ZStack {
             // Main rectangle
@@ -635,31 +657,54 @@ struct RectangleVisualization: View {
                     lineWidth: 3
                 )
                 .frame(width: width, height: height)
+                .position(x: cx, y: cy)
                 .shadow(color: Color(hex: "#00D9FF").opacity(0.5), radius: 15)
             
-            // Left dimension (height)
-            DimensionLine(
-                start: CGPoint(x: -width/2 - 25, y: -height/2),
-                end: CGPoint(x: -width/2 - 25, y: height/2),
-                label: heightValue,
-                labelOffset: CGPoint(x: -20, y: 0),
-                isVertical: true
-            )
+            // Left dimension line (height)
+            Path { path in
+                // Vertical line
+                path.move(to: CGPoint(x: cx - width/2 - 20, y: cy - height/2))
+                path.addLine(to: CGPoint(x: cx - width/2 - 20, y: cy + height/2))
+                // Top cap
+                path.move(to: CGPoint(x: cx - width/2 - 25, y: cy - height/2))
+                path.addLine(to: CGPoint(x: cx - width/2 - 15, y: cy - height/2))
+                // Bottom cap
+                path.move(to: CGPoint(x: cx - width/2 - 25, y: cy + height/2))
+                path.addLine(to: CGPoint(x: cx - width/2 - 15, y: cy + height/2))
+            }
+            .stroke(Color(hex: "#FFD700"), lineWidth: 1.5)
             
-            // Bottom dimension (width)
-            DimensionLine(
-                start: CGPoint(x: -width/2, y: height/2 + 25),
-                end: CGPoint(x: width/2, y: height/2 + 25),
-                label: widthValue,
-                labelOffset: CGPoint(x: 0, y: 18),
-                isVertical: false
-            )
+            // Left label (height)
+            Text(heightValue)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(Color(hex: "#FFD700"))
+                .position(x: cx - width/2 - 45, y: cy)
+            
+            // Bottom dimension line (width)
+            Path { path in
+                // Horizontal line
+                path.move(to: CGPoint(x: cx - width/2, y: cy + height/2 + 20))
+                path.addLine(to: CGPoint(x: cx + width/2, y: cy + height/2 + 20))
+                // Left cap
+                path.move(to: CGPoint(x: cx - width/2, y: cy + height/2 + 15))
+                path.addLine(to: CGPoint(x: cx - width/2, y: cy + height/2 + 25))
+                // Right cap
+                path.move(to: CGPoint(x: cx + width/2, y: cy + height/2 + 15))
+                path.addLine(to: CGPoint(x: cx + width/2, y: cy + height/2 + 25))
+            }
+            .stroke(Color(hex: "#FFD700"), lineWidth: 1.5)
+            
+            // Bottom label (width)
+            Text(widthValue)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(Color(hex: "#FFD700"))
+                .position(x: cx, y: cy + height/2 + 40)
             
             // Right angle marker
             Path { path in
-                path.move(to: CGPoint(x: -width/2 + 15, y: height/2))
-                path.addLine(to: CGPoint(x: -width/2 + 15, y: height/2 - 15))
-                path.addLine(to: CGPoint(x: -width/2, y: height/2 - 15))
+                path.move(to: CGPoint(x: cx - width/2 + 15, y: cy + height/2))
+                path.addLine(to: CGPoint(x: cx - width/2 + 15, y: cy + height/2 - 15))
+                path.addLine(to: CGPoint(x: cx - width/2, y: cy + height/2 - 15))
             }
             .stroke(Color(hex: "#FFD700"), lineWidth: 1.5)
         }
@@ -1053,32 +1098,43 @@ struct SceneKitView: UIViewRepresentable {
         cameraNode.camera?.fieldOfView = 45
         scene.rootNode.addChildNode(cameraNode)
         
-        // Ambient light
+        // Ambient light - BRIGHTER
         let ambientLight = SCNNode()
         ambientLight.light = SCNLight()
         ambientLight.light?.type = .ambient
-        ambientLight.light?.color = UIColor(white: 0.4, alpha: 1.0)
+        ambientLight.light?.color = UIColor(white: 0.6, alpha: 1.0)
+        ambientLight.light?.intensity = 500
         scene.rootNode.addChildNode(ambientLight)
         
-        // Main directional light
+        // Main directional light - BRIGHTER
         let mainLight = SCNNode()
         mainLight.light = SCNLight()
         mainLight.light?.type = .directional
         mainLight.light?.color = UIColor.white
-        mainLight.light?.intensity = 800
+        mainLight.light?.intensity = 1200
         mainLight.position = SCNVector3(x: 5, y: 5, z: 5)
         mainLight.look(at: SCNVector3(0, 0, 0))
         scene.rootNode.addChildNode(mainLight)
         
-        // Fill light
+        // Fill light - BRIGHTER cyan
         let fillLight = SCNNode()
         fillLight.light = SCNLight()
         fillLight.light?.type = .directional
         fillLight.light?.color = UIColor(hex: "#00D9FF") ?? .cyan
-        fillLight.light?.intensity = 400
+        fillLight.light?.intensity = 600
         fillLight.position = SCNVector3(x: -3, y: 2, z: -3)
         fillLight.look(at: SCNVector3(0, 0, 0))
         scene.rootNode.addChildNode(fillLight)
+        
+        // Front light - NEW for better visibility
+        let frontLight = SCNNode()
+        frontLight.light = SCNLight()
+        frontLight.light?.type = .directional
+        frontLight.light?.color = UIColor.white
+        frontLight.light?.intensity = 400
+        frontLight.position = SCNVector3(x: 0, y: 0, z: 5)
+        frontLight.look(at: SCNVector3(0, 0, 0))
+        scene.rootNode.addChildNode(frontLight)
         
         // Rim light
         let rimLight = SCNNode()
@@ -1152,17 +1208,17 @@ struct SceneKitView: UIViewRepresentable {
             geometry = SCNPyramid(width: normalizedBase, height: normalizedHeight, length: normalizedBase)
         }
         
-        // Material
+        // Material - BRIGHT version
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor(hex: "#1E3A5F") ?? .blue
+        material.diffuse.contents = UIColor(hex: "#4ECDC4") ?? .cyan  // Bright teal
         material.specular.contents = UIColor.white
-        material.shininess = 0.7
-        material.fresnelExponent = 2.0
-        material.reflective.contents = UIColor(hex: "#00D9FF")?.withAlphaComponent(0.2)
+        material.shininess = 0.8
+        material.fresnelExponent = 1.5
+        material.reflective.contents = UIColor(hex: "#00D9FF")?.withAlphaComponent(0.3)
         material.isDoubleSided = false
         material.lightingModel = .physicallyBased
-        material.metalness.contents = 0.3
-        material.roughness.contents = 0.4
+        material.metalness.contents = 0.2
+        material.roughness.contents = 0.3
         
         geometry.materials = [material]
         
