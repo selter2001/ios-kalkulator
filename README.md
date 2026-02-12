@@ -1,4 +1,4 @@
-# iOS Calculator
+# ios-precision-calc
 
 ![Swift](https://img.shields.io/badge/Swift-F05138?style=flat&logo=swift&logoColor=white)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-0071E3?style=flat&logo=swift&logoColor=white)
@@ -47,8 +47,8 @@ Sphere, Cube, Rectangular Prism, Cylinder, Cone, Pyramid, Torus
 ### Installation
 
 ```bash
-git clone https://github.com/selter2001/ios-kalkulator.git
-cd ios-kalkulator
+git clone https://github.com/selter2001/ios-precision-calc.git
+cd ios-precision-calc
 open ios-kalkulator.xcodeproj
 ```
 
@@ -87,7 +87,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-# Kalkulator iOS
+# ios-precision-calc
 
 Dwutrybowy kalkulator na iOS łączący standardową arytmetykę z liczbami o dowolnej precyzji oraz interaktywny kalkulator geometryczny z wizualizacją 3D w SceneKit. Przełączaj się między precyzyjnymi codziennymi obliczeniami a eksploracją kształtów 2D/3D — wszystko w jednej aplikacji.
 
@@ -130,8 +130,8 @@ Sfera, Sześcian, Prostopadłościan, Walec, Stożek, Ostrosłup, Torus
 ### Instalacja
 
 ```bash
-git clone https://github.com/selter2001/ios-kalkulator.git
-cd ios-kalkulator
+git clone https://github.com/selter2001/ios-precision-calc.git
+cd ios-precision-calc
 open ios-kalkulator.xcodeproj
 ```
 
